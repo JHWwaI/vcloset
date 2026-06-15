@@ -1,0 +1,31 @@
+# Node / Next.js
+node_modules/
+.next/
+out/
+.turbo/
+npm-debug.log*
+yarn-error.log*
+# Secrets (keep .env.example)
+.env
+.env.local
+.env*.local
+# Prisma / SQLite
+*.db
+*.db-journal
+dev.db*
+prisma/dev.db*
+# Python (inference bridge)
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+# Portfolio-doc build scripts (kept locally, generated .docx/.pdf committed)
+docs/diagrams/gen_*.py
+docs/diagrams/*.js
+# Generated test-output artifact (suite is committed, report is not)
+app/inference/engine_test_report.json
