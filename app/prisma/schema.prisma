@@ -1,0 +1,122 @@
+// Prisma schema for vcloset (virtual closet)
+// SQLite for local dev — swap to PostgreSQL later via DATABASE_URL.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Category {
+  TOP
+  BOTTOM
+  DRESS
+  OUTER
+  SHOES
+  ACCESSORY
+}
+
+enum TryOnStatus {
+  PENDING
+  PROCESSING
+  DONE
+  FAILED
+}
+
+enum CreditReason {
+  SIGNUP
+  PURCHASE
+  TRY_ON
+  REFUND
+  MONTHLY_GRANT
+  ADMIN
+}
+
+enum PlanType {
+  FREE
+  BASIC
+  PRO
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  passwordHash  String
+  name          String?
+  plan          PlanType @default(FREE)
+  creditBalance Int      @default(5)
+  createdAt     DateTime @default(now())
+
+  profileImages ProfileImage[]
+  garments      Garment[]
+  sessions      TryOnSession[]
+  creditLedger  CreditLedger[]
+}
+
+model ProfileImage {
+  id        String   @id @default(cuid())
+  userId    String
+  url       String
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Garment {
+  id          String   @id @default(cuid())
+  userId      String
+  url         String   // background-removed image
+  originalUrl String   // raw upload
+  category    Category @default(TOP)
+  name        String?
+  color       String?
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessions    TryOnSession[]
+
+  @@index([userId])
+  @@index([userId, category])
+}
+
+model TryOnSession {
+  id             String      @id @default(cuid())
+  userId         String
+  profileImageId String
+  garmentId      String
+  resultUrl      String?
+  status         TryOnStatus @default(PENDING)
+  cost           Int         @default(1)
+  durationMs     Int?
+  cacheHit       Boolean     @default(false)
+  errorMessage   String?
+  createdAt      DateTime    @default(now())
+  completedAt    DateTime?
+
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  garment        Garment     @relation(fields: [garmentId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([status])
+}
+
+model CreditLedger {
+  id            String       @id @default(cuid())
+  userId        String
+  amount        Int          // positive = grant, negative = consume
+  reason        CreditReason
+  refType       String?
+  refId         String?
+  balanceAfter  Int
+  createdAt     DateTime     @default(now())
+
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+}
