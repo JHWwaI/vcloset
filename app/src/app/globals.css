@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+/* ───────── vcloset summer theme ─────────
+   바다(teal) + 코랄(coral) + 모래(sand) — 밝고 시원한 여름 무드.
+   OS 다크모드가 레이아웃을 깨던 prefers-color-scheme 블록은 제거. */
+:root {
+  --sand:    #fff9f0;   /* 따뜻한 배경 */
+  --sky:     #eaf8fb;   /* 옅은 하늘 */
+  --surface: #ffffff;   /* 카드 */
+  --ink:     #0e3a46;   /* 깊은 바다(텍스트) */
+  --ink-soft:#4a6b74;   /* 보조 텍스트 */
+  --coral:   #ff6f5e;   /* 주요 액션 */
+  --coral-d: #f2553f;   /* 코랄 hover */
+  --teal:    #14b8a6;   /* 보조 강조 */
+  --sun:     #ffc24b;   /* 포인트 */
+  --line:    #e7ded2;   /* 모래빛 경계선 */
+}
+
+@theme inline {
+  --color-background: var(--sand);
+  --color-foreground: var(--ink);
+  --font-sans: var(--font-geist-sans);
+}
+
+html, body {
+  background:
+    radial-gradient(1100px 480px at 88% -8%, rgba(20,184,166,0.14), transparent 60%),
+    radial-gradient(900px 460px at -6% 4%, rgba(255,111,94,0.12), transparent 55%),
+    linear-gradient(180deg, var(--sky) 0%, var(--sand) 38%);
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: var(--font-geist-sans), "Malgun Gothic", Arial, sans-serif;
+}
+
+/* ── 버튼/칩 헬퍼 (Tailwind 레이어 밖이라 우선순위 확보) ── */
+.btn-primary {
+  background: linear-gradient(180deg, var(--coral), var(--coral-d));
+  color: #fff;
+  border-radius: 9999px;
+  box-shadow: 0 6px 16px rgba(242,85,63,0.28);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 9px 22px rgba(242,85,63,0.34); }
+.btn-primary:disabled { filter: grayscale(.4) opacity(.6); box-shadow: none; transform: none; }
+
+.btn-soft {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  border-radius: 9999px;
+  transition: border-color .12s ease, color .12s ease;
+}
+.btn-soft:hover { border-color: var(--teal); color: var(--teal); }
+
+/* 카테고리/필터 칩 — 흰 배경 위에서도 또렷하게 보이도록 */
+.chip {
+  background: var(--surface);
+  color: var(--ink-soft);
+  border: 1.5px solid var(--line);
+  border-radius: 9999px;
+  transition: all .12s ease;
+}
+.chip:hover { border-color: var(--teal); color: var(--ink); }
+.chip-active {
+  background: linear-gradient(180deg, var(--teal), #0fa392);
+  color: #fff;
+  border: 1.5px solid transparent;
+  border-radius: 9999px;
+  box-shadow: 0 4px 12px rgba(20,184,166,0.30);
+}
+
+.surface-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+}
+
+.glass-bar {
+  background: rgba(255,255,255,0.72);
+  backdrop-filter: saturate(140%) blur(10px);
+  border-bottom: 1px solid var(--line);
+}
